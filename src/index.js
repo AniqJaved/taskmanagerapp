@@ -12,45 +12,90 @@ app.use(express.json())
 
 
 //Create Users
-app.post('/users',(req,res) => {
+app.post('/users', async (req,res) => {
     const user = new User(req.body)
-    user.save().then(()=>{
+    try{
+        await user.save()
         res.status(201).send(user)
-    }).catch((err)=>{
+    }
+    catch(err){
         res.status(400).send(err)
-    })
+    }
 })
 
 // Find Users
-app.get('/users',(req,res)=>{
-    User.find({}).then((users)=>{
+app.get('/users', async (req,res)=>{
+
+    try{
+        const users = await User.find({})
         res.send(users)
-    }).catch((err)=>{
+    }
+    catch(err){
         res.status(400).send(err)
-    })
+    }
 })
 
 
 //Find Users with particular id
-app.get('/users/:id',(req,res)=>{  // :id is used to grab the id which user adds in the route
+app.get('/users/:id', async (req,res)=>{  // :id is used to grab the id which user adds in the route
     const _id = req.params.id
-    User.findById(_id).then((user)=>{
+    try{
+        const user = await User.findById(_id)
+        
         if(!user){
+            console.log("No user")
             res.status(404).send()
         }
         res.status(201).send(user)
-    }).catch((err)=>{
+    }
+    catch(err){
         res.status(400).send(err)
-    })
+    }
 })
 
-app.post('/tasks',(req,res) => {
+//Create Task
+app.post('/tasks', async (req,res) => {
     const task = new Task(req.body)
-    task.save().then(()=>{
+    try {
+        await task.save()
         res.status(201).send(task)
-    }).catch((err)=>{
+    }
+    catch(err){
         res.status(400).send(err)
-    })
+    }
+    
+})
+
+
+// Find Tasks
+app.get('/tasks',async (req,res)=>{
+    
+    try{
+        const tasks = await Task.find({})
+        res.send(tasks)
+    }
+    catch(err){
+        res.status(400).send(err)
+    }
+    
+})
+
+
+//Find Users with particular id
+app.get('/tasks/:id',async (req,res)=>{  // :id is used to grab the id which user adds in the route
+    const _id = req.params.id
+    try{
+        const task = await Task.findById(_id)
+        if(!task){
+            res.status(404).send()
+        }
+        res.status(201).send(task)
+    }
+
+    catch(err){
+        res.status(400).send(err)
+    }
+    
 })
 
 app.listen(port, ()=>{
