@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{
     useNewUrlParser: true
 })
 
-const User = mongoose.model('User',{
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -44,5 +45,21 @@ const User = mongoose.model('User',{
         }
     }
 })
+
+//Middleware for converting the password into hased one
+userSchema.pre('save', async function (next){
+    console.log("Middleware running")
+
+    const user  = this 
+
+    if(user.isModified("password")){
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+
+    //If we donot call this next then this pre will be running forever expecting the function to complete.
+    next();
+})
+
+const User = mongoose.model('User', userSchema)
 
 module.exports = User
