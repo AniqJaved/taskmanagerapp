@@ -8,9 +8,9 @@ const app = express()
 const port = process.env.PORT || 3000
 
 //This acts a middleware for the website when in mantienece mode
-app.use((req,res,next)=>{
-    res.status(503).send('Site is currently down please check back later');
-})
+// app.use((req,res,next)=>{
+//     res.status(503).send('Site is currently down please check back later');
+// })
 
 // This line converts the request to json format
 app.use(express.json())
