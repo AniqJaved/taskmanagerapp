@@ -89,12 +89,12 @@ router.get('/tasks/:id', auth, async (req,res)=>{  // :id is used to grab the id
 })
 
 //Delete Task
-router.delete('/tasks/:id',async (req,res)=>{  // :id is used to grab the id which user adds in the route
+router.delete('/tasks/:id', auth, async (req,res)=>{  // :id is used to grab the id which user adds in the route
     const _id = req.params.id
     try{
-        const task = await Task.findOneAndDelete({_id, owner: req.user._id})
+        const task = await Task.findOneAndDelete({_id, owner: req.user._id});
         if(!task){
-            res.status(404).send()
+            return res.status(404).send()
         }
         res.send(task)
     }

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const Task = require('../models/task')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
@@ -106,7 +107,7 @@ userSchema.statics.findByCredentials = async (email,password) => {
 
 //Middleware for converting the password into hased one
 userSchema.pre('save', async function (next){
-    console.log("Middleware running")
+    console.log("Middleware for password -> hashed password running")
 
     const user  = this 
 
@@ -117,6 +118,15 @@ userSchema.pre('save', async function (next){
     //If we donot call this next then this pre will be running forever expecting the function to complete.
     next();
 })
+
+
+//Middleware for deleting all the tasks associated with one user
+userSchema.pre('remove', async function(next){
+    const user = this
+    await Task.deleteMany({owner: user._id})
+    next()
+})
+
 
 const User = mongoose.model('User', userSchema)
 
