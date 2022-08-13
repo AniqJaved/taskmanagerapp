@@ -60,7 +60,7 @@ router.post('/users/logoutAll',auth, async(req,res)=>{
 
 //Update User
 
-router.patch('/users/:id', async (req,res)=>{
+router.patch('/users/me',auth, async (req,res)=>{
     const updates = Object.keys(req.body)
     const allowedUpdates = ["name","age","email","password"]
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -69,22 +69,16 @@ router.patch('/users/:id', async (req,res)=>{
     }
 
     try{
-        const user = await User.findById(req.params.id);
         updates.forEach((update)=>{
-            user[update] = req.body[update]
+            req.user[update] = req.body[update]
         })
 
-        await user.save()
+        await req.user.save()
 
 
         //We are not using below line of code as it is not aligned with mongoose due to findByIdAndUpdate. And due to this we are not able to use middleware and this fucntion bypasses that.
         //const user = await User.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true})
-
-
-        if(!user){
-            res.status(404).send()
-        }
-        res.send(user)
+        res.send(req.user)
         
     }
     catch(err){
@@ -98,33 +92,14 @@ router.get('/users/me', auth , async (req,res)=>{
 })
 
 
-//Find Users with particular id
-router.get('/users/:id', async (req,res)=>{  // :id is used to grab the id which user adds in the route
-    const _id = req.params.id
-    try{
-        const user = await User.findById(_id)
-        
-        if(!user){
-            res.status(404).send()
-        }
-        res.send(user)
-    }
-    catch(err){
-        res.status(400).send(err)
-    }
-})
+
 
 //Delete User 
 
-router.delete('/users/:id', async (req,res)=>{  // :id is used to grab the id which user adds in the route
-    const _id = req.params.id
+router.delete('/users/me',auth, async (req,res)=>{  // :id is used to grab the id which user adds in the route
     try{
-        const user = await User.findByIdAndDelete(_id)
-        
-        if(!user){
-            res.status(404).send()
-        }
-        res.send(user)
+        await req.user.remove()
+        res.send(req.user)
     }
     catch(err){
         res.status(400).send(err)
