@@ -4,6 +4,8 @@ const auth = require('../middleware/auth')
 
 const router = new express.Router()
 
+//Only create and login requests are not not using auth middleware because in them we are making and assigning token respectively.
+
 //Create Users
 router.post('/users', async (req,res) => {
     const user = new User(req.body)

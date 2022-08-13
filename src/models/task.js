@@ -13,6 +13,10 @@ const Task = mongoose.model('Task',{
         required: false,
         type: Boolean,
         default: false
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,  //We are specifying that owner field will be of type id.
+        required: true
     }
 })
 
