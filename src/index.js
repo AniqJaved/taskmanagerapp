@@ -21,5 +21,5 @@ app.use(userRouter)
 app.use(taskRouter)
 
 app.listen(port, ()=>{
-    console.log("Sever is up on port" + port)
+    console.log("Sever is up on port " + port)
 })
