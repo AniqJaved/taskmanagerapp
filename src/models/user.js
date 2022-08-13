@@ -55,6 +55,18 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+//This method will be applied to all the res.send(). Because everytime express send some response it converts it into JSON
+//Bascially we are hiding the password and tokens array
+userSchema.methods.toJSON = function() {
+    const user = this
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
+
 //methods are accessible on instances
 userSchema.methods.generateAuthToken = async function (){      // We are using simple function instead of arrow function because we are using 'this' binding in it.
     const user = this 
