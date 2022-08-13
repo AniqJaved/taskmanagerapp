@@ -55,6 +55,15 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+
+//Virtual field-> This field will be virtual as it will not be hard coded in any database model.
+userSchema.virtual('tasks',{
+    ref: 'Task',
+    localField: '_id',          //From the user
+    foreignField: 'owner'       //From the task
+})
+userSchema.set('toJSON', { virtuals: true });
+
 //This method will be applied to all the res.send(). Because everytime express send some response it converts it into JSON
 //Bascially we are hiding the password and tokens array
 userSchema.methods.toJSON = function() {

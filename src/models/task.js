@@ -16,7 +16,8 @@ const Task = mongoose.model('Task',{
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,  //We are specifying that owner field will be of type id.
-        required: true
+        required: true,
+        ref: 'User'
     }
 })
 
