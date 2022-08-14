@@ -56,11 +56,24 @@ router.patch('/tasks/:id', auth , async (req,res)=>{
 
 // Find Tasks
 router.get('/tasks', auth, async (req,res) => {
-    
+    const match = {}
+
+    if(req.query.completed){
+        match.completed = req.query.completed === 'true'
+    }
     try{
+        if(match.hasOwnProperty('completed')){
+            const tasks = await Task.find({owner: req.user._id, completed:match.completed})
+            //console.log(tasks)
+            return res.send(tasks)
+        }
+        
         const tasks = await Task.find({owner: req.user._id})
-        //await req.user.populate("tasks").execPopulate()
         res.send(tasks)
+        
+        //await req.user.populate("tasks").execPopulate()
+        //console.log(match)
+        
     }
     catch(err){
         res.status(500).send()
