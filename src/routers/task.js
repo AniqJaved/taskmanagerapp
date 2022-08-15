@@ -55,13 +55,22 @@ router.patch('/tasks/:id', auth , async (req,res)=>{
 
 
 // Find Tasks
+// GET /tasks?completed=true
+// GET /tasks?limit=2&skip=2
+// GET /tasks?sortBy=createdAt:desc
 router.get('/tasks', auth, async (req,res) => {
     const match = {}
+    const sort = {}
     
     // Below code will check that if the search query contains completed key word then it will filter weather it is
     // true or false.
     if(req.query.completed){
         match.completed = req.query.completed === 'true' //This line is checking that if we add completed in the query string then its value 'true' or 'false' will be string and in order to extract out boolean we had made this logic.
+    }
+
+    if(req.query.sortBy){
+        const part = req.query.sortBy.split(":")
+        sort[part[0]] = part[1] === "desc" ? -1 : 1 ;    //Now descending in case of boolen is that true being 1 will come first in result.
     }
     try{
         //This populate is basically adding  tasks field to the req.user
@@ -71,7 +80,8 @@ router.get('/tasks', auth, async (req,res) => {
             match,
             options: {
                 limit: parseInt(req.query.limit), //Pagination: As the query string is string so we will converting that to integer
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),    // This will skip the data fetched.
+                sort
             }
         });
         res.send(req.user.tasks)
