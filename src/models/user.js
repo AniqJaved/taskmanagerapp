@@ -4,6 +4,8 @@ const Task = require('../models/task')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
+
+
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{
     useNewUrlParser: true
 })
@@ -55,7 +57,8 @@ const userSchema = new mongoose.Schema({
         }
     }]
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {virtuals: true}
 })
 
 
@@ -65,7 +68,7 @@ userSchema.virtual('tasks',{
     localField: '_id',          //From the user
     foreignField: 'owner'       //From the task
 })
-userSchema.set('toJSON', { virtuals: true });
+
 
 //This method will be applied to all the res.send(). Because everytime express send some response it converts it into JSON
 //Bascially we are hiding the password and tokens array

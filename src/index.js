@@ -1,6 +1,7 @@
 const express = require('express')
 const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')
+const mongoose = require('mongoose');
 require('./db/mongoose')
 
 
@@ -23,3 +24,14 @@ app.use(taskRouter)
 app.listen(port, ()=>{
     console.log("Sever is up on port " + port)
 })
+
+const Task = require('./models/task')
+const User = require('./models/user')
+
+// const main = async() =>{
+//     const user = await User.findById('62f84b3190456a11875287f3')
+//     await user.populate('tasks');
+//     console.log(user.tasks)
+// }
+
+// main()

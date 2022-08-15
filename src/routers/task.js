@@ -57,26 +57,27 @@ router.patch('/tasks/:id', auth , async (req,res)=>{
 // Find Tasks
 router.get('/tasks', auth, async (req,res) => {
     const match = {}
-
+    
+    // Below code will check that if the search query contains completed key word then it will filter weather it is
+    // true or false.
     if(req.query.completed){
-        match.completed = req.query.completed === 'true'
+        match.completed = req.query.completed === 'true' //This line is checking that if we add completed in the query string then its value 'true' or 'false' will be string and in order to extract out boolean we had made this logic.
     }
     try{
-        if(match.hasOwnProperty('completed')){
-            const tasks = await Task.find({owner: req.user._id, completed:match.completed})
-            //console.log(tasks)
-            return res.send(tasks)
-        }
+        //This populate is basically adding  tasks field to the req.user
         
-        const tasks = await Task.find({owner: req.user._id})
-        res.send(tasks)
-        
-        //await req.user.populate("tasks").execPopulate()
-        //console.log(match)
-        
+        await req.user.populate({
+            path: 'tasks',
+            match,
+            options: {
+                limit: parseInt(req.query.limit), //Pagination: As the query string is string so we will converting that to integer
+                skip: parseInt(req.query.skip)
+            }
+        });
+        res.send(req.user.tasks)
     }
     catch(err){
-        res.status(500).send()
+        res.status(500).send(err)
     }
     
 })
