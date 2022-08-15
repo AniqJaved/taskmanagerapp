@@ -118,19 +118,16 @@ const upload = multer({
     //This is builtin function of multer which filter files.
     fileFilter(req,file,cb){
         if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
-            return cb(new Error('Please upload an image'))
+            return cb(new Error('Please upload an image file'))
         }
 
         cb(undefined,true)                          //Undefined means that error is undefined
     }
 })
 router.post('/users/me/avatar',upload.single('avatar'),(req,res)=>{
-    try{
-        res.send()
-    }
-    catch(err){
-        res.status(500).send()
-    }
+        res.send()                           //You can see we are not using try and catch in here it is because catch will return an html document instead of json file for error. So for error we are using a second argument (error,req,res,next)
+},(error,req,res,next) => {
+    res.status(400).send({error: error.message})
 })
 
 module.exports = router
