@@ -14,7 +14,7 @@ const auth = async (req,res,next) =>{
         
         const token = req.header('Authorization').replace('Bearer ','') //Important we are giving space after Bearer
         
-        const decoded = jwt.verify(token,'mytaskmanager')
+        const decoded = jwt.verify(token,process.env.JWT_SECRET)
         
         const user = await User.findOne({_id: decoded._id, 'tokens.token':token}) // We are finding the 'tokens.token' because in case if user had logged out, then the list will not have token and then he will not be authenticated.
         

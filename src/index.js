@@ -6,7 +6,7 @@ require('./db/mongoose')
 
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT
 
 //This acts a middleware for the website when in mantienece mode
 // app.use((req,res,next)=>{

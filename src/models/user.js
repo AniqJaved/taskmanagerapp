@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{
+mongoose.connect(process.env.MONGODB_URL,{
     useNewUrlParser: true
 })
 
@@ -88,7 +88,7 @@ userSchema.methods.toJSON = function() {
 //methods are accessible on instances
 userSchema.methods.generateAuthToken = async function (){      // We are using simple function instead of arrow function because we are using 'this' binding in it.
     const user = this 
-    const token = jwt.sign({_id: user._id.toString()},'mytaskmanager')  //1st argument: unique id for token , 2nd argument: secret string
+    const token = jwt.sign({_id: user._id.toString()},process.env.JWT_SECRET)  //1st argument: unique id for token , 2nd argument: secret string
 
     user.tokens = user.tokens.concat({token})   //Adding token on the tokens array. WE are having more than one token at a time because if user logs in from different devices then same account must have different tokens.
     await user.save()
